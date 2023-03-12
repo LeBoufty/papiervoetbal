@@ -22,6 +22,14 @@ class Node:
         self.xPos = xPos
         self.yPos = yPos
 
+    def getAdjacentPos(self):
+        return list(
+                filter(lambda x: x[0] >= 0 and x[1] >= 0,
+                [(self.xPos + 1, self.yPos), 
+                (self.xPos - 1, self.yPos), 
+                (self.xPos, self.yPos + 1), 
+                (self.xPos, self.yPos - 1)]))
+
     def getNeighborPos(self):
         return list(
                 filter(lambda x: x[0] >= 0 and x[1] >= 0,
@@ -95,11 +103,24 @@ class Board:
     def fillNodesEdges(self,x,y):
         if self.nodes[x][y] is None or not self.nodes[x][y].isEdge:
             return
+        setAdjacent = False
+        for (xs, ys) in self.nodes[x][y].getAdjacentPos():
+            try:
+                if self.nodes[xs][ys] is None or not self.nodes[xs][ys].isEdge:
+                    continue
+                self.addEdge(x,y,xs,ys)
+                setAdjacent = True
+            except IndexError:
+                continue
+        if setAdjacent:
+            return
+
         for (xs, ys) in self.nodes[x][y].getNeighborPos():
             try:
                 if self.nodes[xs][ys] is None or not self.nodes[xs][ys].isEdge:
                     continue
                 self.addEdge(x,y,xs,ys)
+                setAdjacent = True
             except IndexError:
                 continue
 
