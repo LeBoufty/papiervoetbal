@@ -65,13 +65,13 @@ class Board:
              [Edges.TOPLEFT,    Edges.TOP,      Edges.TOPRIGHT   ],
              [Edges.LEFT,       Edges.EMPTY,    Edges.RIGHT      ],
              [Edges.BOTTOMLEFT, Edges.BOTTOM,   Edges.BOTTOMRIGHT]]
-        return edges[getSign(x - xs) + 1][getSign(y - ys) + 1]
+        return edges[getSign(xs - x) + 1][getSign(ys - y) + 1]
 
     def addEdge(self, x, y, xs, ys):
         if not self.exists(x,y) or not self.exists(xs,ys):
             return
-        self.nodes[xs][ys].edges |= self.getEdge(x, y, xs, ys)
-        self.nodes[x][y].edges   |= self.getEdge(xs, ys, x, y)
+        self.nodes[x][y].edges   |= self.getEdge(x, y, xs, ys)
+        self.nodes[xs][ys].edges |= self.getEdge(xs, ys, x, y)
 
     def fillNodesEdges(self,x,y):
         if self.nodes[x][y] is None or not self.nodes[x][y].isEdge:
@@ -108,9 +108,14 @@ class Board:
     def exists(self, i, j):
         return self.onBoard(i,j) and self.nodes[i][j] is not None
         
-    # def canAddEdge(self, x, y, xs, ys):
-    #     if not self.exists(x,y) or not self.exists(xs, ys):
-    #         return False
+    def canAddEdge(self, x, y, xs, ys):
+        if not self.exists(x,y) or not self.exists(xs, ys):
+            return False
+        if self.nodes[x][y].edges & self.getEdge(x, y, xs, ys):
+            return False
+        if self.nodes[xs][ys].edges & self.getEdge(xs, ys, x, y):
+            return False
+        return True
 
     # Checks if node is on the edge, if it is, changes it's isEdge
     def setEdges(self):
@@ -175,17 +180,31 @@ class Board:
             print(middle)
             print(bottom)
 
-bitMap = [[0, 0, 1, 1, 1, 0, 0],
-          [0, 0, 1, 1, 1, 0, 0],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [1, 1, 1, 1, 1, 1, 1],
-          [0, 0, 1, 1, 1, 0, 0],
-          [0, 0, 1, 1, 1, 0, 0]]
+class Game:
+    def __init__(self):
+        bitMap = [[0, 0, 1, 1, 1, 0, 0],
+                  [0, 0, 1, 1, 1, 0, 0],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [1, 1, 1, 1, 1, 1, 1],
+                  [0, 0, 1, 1, 1, 0, 0],
+                  [0, 0, 1, 1, 1, 0, 0]]
+        self.board = Board(bitMap)
 
-board = Board(bitMap)
-board.print()
+    def loop(self):
+        while True:
+            self.board.print()
+            x  = int(input("write x: "))
+            y  = int(input("write y: "))
+            xs = int(input("write xs: "))
+            ys = int(input("write ys: "))
+
+            if self.board.canAddEdge(x,y,xs,ys):
+                self.board.addEdge(x,y,xs,ys)
+
+game = Game()
+game.loop()
