@@ -13,6 +13,13 @@ class Edges(Flag):
                          # is instead used to create an empty edge flag
                          # and then add other edges onto it
 
+def getSign(x):
+    if x < 0:
+        return -1
+    if x > 0:
+        return 1
+    return 0
+
 class Node:
     isEdge = False
     edges = Edges.EMPTY
@@ -53,52 +60,18 @@ class Board:
                     self.nodes[i][j] = Node(i,j)
         self.setEdges()
 
-    def addEdge(self,x,y,xs,ys):
-        # 1
-        # 2
-        if (x < xs and y == ys):
-            self.nodes[x ][y ].edges |= Edges.BOTTOM
-            self.nodes[xs][ys].edges |= Edges.TOP
+    def getEdge(self, x, y, xs, ys):
+        edges = [
+             [Edges.TOPLEFT,    Edges.TOP,      Edges.TOPRIGHT   ],
+             [Edges.LEFT,       Edges.EMPTY,    Edges.RIGHT      ],
+             [Edges.BOTTOMLEFT, Edges.BOTTOM,   Edges.BOTTOMRIGHT]]
+        return edges[getSign(x - xs) + 1][getSign(y - ys) + 1]
 
-        # 2
-        # 1
-        if (x > xs and y == ys):
-            self.nodes[x ][y ].edges |= Edges.TOP
-            self.nodes[xs][ys].edges |= Edges.BOTTOM
-
-        # 1 2
-        if (x == xs and y < ys):
-            self.nodes[x ][y ].edges |= Edges.RIGHT
-            self.nodes[xs][ys].edges |= Edges.LEFT
-
-        # 2 1
-        if (x == xs and y > ys):
-            self.nodes[x ][y ].edges |= Edges.LEFT
-            self.nodes[xs][ys].edges |= Edges.RIGHT
-        
-        # 1 .
-        # . 2
-        if (x < xs and y < ys):
-            self.nodes[x ][y ].edges |= Edges.BOTTOMRIGHT
-            self.nodes[xs][ys].edges |= Edges.TOPLEFT
-
-        # 2 .
-        # . 1
-        if (x > xs and y > ys):
-            self.nodes[x ][y ].edges |= Edges.TOPLEFT
-            self.nodes[xs][ys].edges |= Edges.BOTTOMRIGHT
-
-        # . 1
-        # 2 .
-        if (x < xs and y > ys):
-            self.nodes[x ][y ].edges |= Edges.BOTTOMLEFT
-            self.nodes[xs][ys].edges |= Edges.TOPRIGHT
-
-        # . 2
-        # 1 .
-        if (x > xs and y < ys):
-            self.nodes[x ][y ].edges |= Edges.TOPRIGHT
-            self.nodes[xs][ys].edges |= Edges.BOTTOMLEFT
+    def addEdge(self, x, y, xs, ys):
+        if not self.exists(x,y) or not self.exists(xs,ys):
+            return
+        self.nodes[xs][ys].edges |= self.getEdge(x, y, xs, ys)
+        self.nodes[x][y].edges   |= self.getEdge(xs, ys, x, y)
 
     def fillNodesEdges(self,x,y):
         if self.nodes[x][y] is None or not self.nodes[x][y].isEdge:
@@ -135,6 +108,9 @@ class Board:
     def exists(self, i, j):
         return self.onBoard(i,j) and self.nodes[i][j] is not None
         
+    # def canAddEdge(self, x, y, xs, ys):
+    #     if not self.exists(x,y) or not self.exists(xs, ys):
+    #         return False
 
     # Checks if node is on the edge, if it is, changes it's isEdge
     def setEdges(self):
