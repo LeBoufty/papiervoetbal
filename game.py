@@ -12,6 +12,9 @@ class Edges(Flag):
     EMPTY       = auto() # doesn't actually mean that it has nothing
                          # is instead used to create an empty edge flag
                          # and then add other edges onto it
+edges = [[Edges.TOPLEFT,    Edges.TOP,      Edges.TOPRIGHT   ],
+         [Edges.LEFT,       Edges.EMPTY,    Edges.RIGHT      ],
+         [Edges.BOTTOMLEFT, Edges.BOTTOM,   Edges.BOTTOMRIGHT]]
 
 def getSign(x):
     if x < 0:
@@ -51,7 +54,11 @@ class Node:
 
 class Board:
     nodes = [[]]
-    def __init__(self, bitMap):
+    ballX = 0
+    ballY = 0
+    def __init__(self, bitMap, ballX, ballY):
+        self.ballX = ballX
+        self.ballY = ballY
         for i in range(0,len(bitMap)):
             self.nodes.append([])
             for j in range(0,len(bitMap[i])):
@@ -61,10 +68,6 @@ class Board:
         self.setEdges()
 
     def getEdge(self, x, y, xs, ys):
-        edges = [
-             [Edges.TOPLEFT,    Edges.TOP,      Edges.TOPRIGHT   ],
-             [Edges.LEFT,       Edges.EMPTY,    Edges.RIGHT      ],
-             [Edges.BOTTOMLEFT, Edges.BOTTOM,   Edges.BOTTOMRIGHT]]
         return edges[getSign(xs - x) + 1][getSign(ys - y) + 1]
 
     def addEdge(self, x, y, xs, ys):
@@ -130,55 +133,72 @@ class Board:
 
     # idk how to do flask so have console print instead >:)
     def print(self):
-        for row in self.nodes:
+        for i in range(0, len(self.nodes)):
             top    = ""
             middle = ""
             bottom = ""
-            for node in row:
-                if node is None:
+            for j in range(0, len(self.nodes[i])):
+                if self.nodes[i][j] is None:
                     top    += '   '
                     middle += '   '
                     bottom += '   '
                     continue
                 # pretty ugly......
-                if Edges.TOPLEFT in node.edges:
+                if Edges.TOPLEFT in self.nodes[i][j].edges:
                     top += '\\'
                 else: 
                     top += ' '
-                if Edges.TOP in node.edges:
+                if Edges.TOP in self.nodes[i][j].edges:
                     top += '|'
                 else: 
                     top += ' '
-                if Edges.TOPRIGHT in node.edges:
+                if Edges.TOPRIGHT in self.nodes[i][j].edges:
                     top += '/'
                 else: 
                     top += ' '
 
-                if Edges.LEFT in node.edges:
+                if Edges.LEFT in self.nodes[i][j].edges:
                     middle += '-'
                 else: 
                     middle += ' '
-                middle +='.'
-                if Edges.RIGHT in node.edges:
+                if self.ballX == i and self.ballY == j:
+                    middle += 'o'
+                else:
+                    middle += '.' 
+
+                if Edges.RIGHT in self.nodes[i][j].edges:
                     middle += '-'
                 else: 
                     middle += ' '
 
-                if Edges.BOTTOMLEFT in node.edges:
+                if Edges.BOTTOMLEFT in self.nodes[i][j].edges:
                     bottom += '/'
                 else: 
                     bottom += ' '
-                if Edges.BOTTOM in node.edges:
+                if Edges.BOTTOM in self.nodes[i][j].edges:
                     bottom += '|'
                 else: 
                     bottom += ' '
-                if Edges.BOTTOMRIGHT in node.edges:
+                if Edges.BOTTOMRIGHT in self.nodes[i][j].edges:
                     bottom += '\\'
                 else: 
                     bottom += ' '
             print(top)
             print(middle)
             print(bottom)
+
+    def kickBall(self, direction):
+        for i in range(0, len(edges)):
+            try:
+                j = edges[i].index(direction)
+                if self.canAddEdge(self.ballX, self.ballY, self.ballX + i - 1, self.ballY + j - 1):
+                    self.addEdge(self.ballX, self.ballY, self.ballX + i - 1, self.ballY + j - 1)
+                    self.ballX += i - 1 
+                    self.ballY += j - 1
+                    return True
+            except ValueError:
+                continue
+        return False
 
 class Game:
     def __init__(self):
@@ -193,18 +213,20 @@ class Game:
                   [1, 1, 1, 1, 1, 1, 1],
                   [0, 0, 1, 1, 1, 0, 0],
                   [0, 0, 1, 1, 1, 0, 0]]
-        self.board = Board(bitMap)
+        self.board = Board(bitMap, 5, 3)
 
     def loop(self):
+        self.board.print()
         while True:
-            self.board.print()
-            x  = int(input("write x: "))
-            y  = int(input("write y: "))
-            xs = int(input("write xs: "))
-            ys = int(input("write ys: "))
+            direction = int(input("write direction: "))
+            try:
+                if self.board.kickBall(edges[int(direction / 3)][direction % 3]):
+                    self.board.print()
+                else:
+                    print("Cannot make such move")
+            except IndexError:
+                print("Unknown move")
 
-            if self.board.canAddEdge(x,y,xs,ys):
-                self.board.addEdge(x,y,xs,ys)
 
 game = Game()
 game.loop()
