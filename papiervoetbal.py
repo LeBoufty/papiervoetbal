@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, session
 import logging
 from flask_session import Session
-
+from game import Game
 
 ### SETUP ### Copied from an old project
 app=Flask(__name__)
@@ -13,4 +13,5 @@ app.logger.setLevel(logging.INFO)
 
 @app.route('/')
 def hello():
-    return "yippee"
+    luigiBoard = Game()
+    return render_template("board.html", boardMap=luigiBoard.boardAsList())

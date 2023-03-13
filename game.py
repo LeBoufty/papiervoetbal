@@ -215,6 +215,9 @@ class Game:
                   [0, 0, 1, 1, 1, 0, 0]]
         self.board = Board(bitMap, 5, 3)
 
+    def boardAsList(self):
+        return [[i for i in line] for line in str(self.board).split("\n")]
+
     def loop(self):
         print(self.board)
         while True:
@@ -228,5 +231,7 @@ class Game:
                 print("Unknown move")
 
 
-game = Game()
-game.loop()
+#game = Game()
+#game.loop()
+
+#print(game.boardAsList())

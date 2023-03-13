@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Papiervoetbal</title>
+    </head>
+    {% block board %}
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Papiervoetbal
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for line in boardMap %}
+                <tr>
+                    {% for bit in line %}
+                    <td><div>{{bit}}</div></td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock %}
+    </body>
+</html>

@@ -130,3 +130,6 @@ dmypy.json
 
 # The secret key for flask app
 SECRET_KEY
+
+# flask sessions
+flask_session
