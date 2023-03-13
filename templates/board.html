@@ -3,7 +3,6 @@
         <title>Papiervoetbal</title>
     </head>
     <body>
-        {% block board %}
         <table>
             <thead>
                 <tr>
@@ -13,75 +12,50 @@
                 </tr>
             </thead>
             <tbody>
-            {% for line in boardMap %}
-                <tr>
-                    {% for bit in line %}
-                    <td><div>{{bit}}</div></td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
+                <tr><td>
+            {% block board %}
+            <table>
+                <tbody>
+                    {% for line in boardMap %}
+                        <tr>
+                            {% for bit in line %}
+                            <td><div>{{bit}}</div></td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endblock %}
+            </td><td>
+                {% block joystick %}
+                <table>
+                    <thead>
+                        <th colspan="3">
+                            Joystick
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="/move/0">\</a></td>
+                            <td><a href="/move/1">|</a></td>
+                            <td><a href="/move/2">/</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/move/3">-</a></td>
+                            <td>.</td>
+                            <td><a href="/move/5">-</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/move/6">/</a></td>
+                            <td><a href="/move/7">|</a></td>
+                            <td><a href="/move/8">\</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endblock %}
+            </td>
+            </tr>
             </tbody>
         </table>
-        {% endblock %}
-        {% block joystick %}
-        <table>
-            <thead>
-                <th colspan="3">
-                    Joystick
-                </th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <a href="/move/0">
-                            \
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/move/1">
-                            |
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/move/2">
-                            /
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="/move/3">
-                            -
-                        </a>
-                    </td>
-                    <td>
-                        .
-                    </td>
-                    <td>
-                        <a href="/move/5">
-                            -
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="/move/6">
-                            /
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/move/7">
-                            |
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/move/8">
-                            \
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        {% endblock %}
     </body>
 </html>
