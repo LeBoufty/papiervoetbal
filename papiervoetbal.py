@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, session
 import logging
 from flask_session import Session
-from game import Game
+from game import Game, edges
 
 ### SETUP ### Copied from an old project
 app=Flask(__name__)
@@ -13,5 +13,26 @@ app.logger.setLevel(logging.INFO)
 
 @app.route('/')
 def hello():
-    luigiBoard = Game()
+    # We load the board that corresponds to this user (laugh at him)
+    luigiBoard = session.get('game', None)
+    if luigiBoard is None: # If there is no board, we create one
+        luigiBoard = Game()
+        session['game'] = luigiBoard
+    
+    # Board renderer
     return render_template("board.html", boardMap=luigiBoard.boardAsList())
+
+@app.route('/move/<int:direction>')
+def move1(direction):
+    # Obligatory board fetching and existence checking
+    luigi = session.get('game', None)
+    if luigi is None: return redirect('/')
+    if luigi.board.kickBall(edges[int(direction / 3)][direction % 3]):
+        session['game'] = luigi
+    # maybe will add an error message if move is impossible later........
+    return redirect('/')
+
+@app.route('/reset')
+def reset():
+    session.pop('game')
+    return redirect('/')
