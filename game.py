@@ -132,7 +132,8 @@ class Board:
         self.fillEdges()
 
     # idk how to do flask so have console print instead >:)
-    def print(self):
+    def __str__(self):
+        out = ""
         for i in range(0, len(self.nodes)):
             top    = ""
             middle = ""
@@ -183,9 +184,8 @@ class Board:
                     bottom += '\\'
                 else: 
                     bottom += ' '
-            print(top)
-            print(middle)
-            print(bottom)
+            out += top + "\n" + middle + "\n" + bottom + "\n"
+        return out
 
     def kickBall(self, direction):
         for i in range(0, len(edges)):
@@ -216,12 +216,12 @@ class Game:
         self.board = Board(bitMap, 5, 3)
 
     def loop(self):
-        self.board.print()
+        print(self.board)
         while True:
             direction = int(input("write direction: "))
             try:
                 if self.board.kickBall(edges[int(direction / 3)][direction % 3]):
-                    self.board.print()
+                    print(self.board)
                 else:
                     print("Cannot make such move")
             except IndexError:
