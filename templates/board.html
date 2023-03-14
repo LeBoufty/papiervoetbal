@@ -39,7 +39,11 @@
                         {% if i%3 == 0 %}
                         <tr>
                         {% endif %}
+                        {% if i != 4 %}
                             <td><a href="/move/{{i}}"><img src="../static/img/move{{i}}.png"></a></td>
+                        {% else %}
+                            <td><img src="../static/img/move{{i}}.png"></td>
+                        {% endif %}
                         {% if i%3 == 2 %}
                         </tr>
                         {% endif %}
