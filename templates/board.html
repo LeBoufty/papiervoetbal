@@ -35,21 +35,15 @@
                         </th>
                     </thead>
                     <tbody>
+                        {% for i in range(9) %}
+                        {% if i%3 == 0 %}
                         <tr>
-                            <td><a href="/move/0">\</a></td>
-                            <td><a href="/move/1">|</a></td>
-                            <td><a href="/move/2">/</a></td>
+                        {% endif %}
+                            <td><a href="/move/{{i}}"><img src="../static/img/move{{i}}.png"></a></td>
+                        {% if i%3 == 2 %}
                         </tr>
-                        <tr>
-                            <td><a href="/move/3">-</a></td>
-                            <td>.</td>
-                            <td><a href="/move/5">-</a></td>
-                        </tr>
-                        <tr>
-                            <td><a href="/move/6">/</a></td>
-                            <td><a href="/move/7">|</a></td>
-                            <td><a href="/move/8">\</a></td>
-                        </tr>
+                        {% endif %}
+                        {% endfor %}
                     </tbody>
                 </table>
                 {% endblock %}
