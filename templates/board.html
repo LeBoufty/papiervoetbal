@@ -1,6 +1,13 @@
 <html>
     <head>
         <title>Papiervoetbal</title>
+    <style>
+.disabled{
+  opacity: 0.5;
+  filter: alpha(opacity=0.5);
+  zoom: 1;  /* needed to trigger "hasLayout" in IE if no width or height is set */ 
+}
+    </style>
     </head>
     <body>
         <table>
@@ -39,10 +46,14 @@
                         {% if i%3 == 0 %}
                         <tr>
                         {% endif %}
-                        {% if i != 4 %}
-                            <td><a href="/move/{{i}}"><img src="../static/img/move{{i}}.png"></a></td>
-                        {% else %}
+                        {% if i == 4 %}
                             <td><img src="../static/img/move{{i}}.png"></td>
+                        {% else %}
+                        {% if i in disabledButtons %}
+                            <td><a class="disabled"><img src="../static/img/move{{i}}.png"></a></td>
+                        {% else %}
+                            <td><a href="/move/{{i}}"><img src="../static/img/move{{i}}.png"></a></td>
+                        {% endif %}
                         {% endif %}
                         {% if i%3 == 2 %}
                         </tr>

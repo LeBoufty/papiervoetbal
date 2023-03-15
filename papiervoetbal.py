@@ -18,9 +18,14 @@ def hello():
     if luigiBoard is None: # If there is no board, we create one
         luigiBoard = Game()
         session['game'] = luigiBoard
+
+    disabledButtons = []
+    for direction in range(9):
+        if not luigiBoard.board.canKickBall(edges[int(direction / 3)][direction % 3]):
+            disabledButtons.append(direction)
     
     # Board renderer
-    return render_template("board.html", boardMap=luigiBoard.boardAsList())
+    return render_template("board.html", boardMap=luigiBoard.boardAsList(), disabledButtons=disabledButtons)
 
 @app.route('/move/<int:direction>')
 def move1(direction):
