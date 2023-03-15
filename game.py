@@ -118,7 +118,25 @@ class Board:
             return False
         if self.nodes[xs][ys].edges & self.getEdge(xs, ys, x, y):
             return False
+        return self.diagonalCheck(x, y, xs, ys)
+
+    def diagonalCheck(self, x, y, xs, ys):
+        edge = self.getEdge(x, y, xs, ys)
+
+        oppositeTop = {Edges.TOPLEFT:  Edges.BOTTOMLEFT,
+                       Edges.TOPRIGHT: Edges.BOTTOMRIGHT}
+        
+        if (toCheck := oppositeTop.get(edge)) is not None:
+            return self.exists(x - 1, y) and not self.nodes[x - 1][y].edges & toCheck 
+
+        oppositeBottom = {Edges.BOTTOMLEFT:  Edges.TOPLEFT,
+                          Edges.BOTTOMRIGHT: Edges.TOPRIGHT}
+        
+        if (toCheck := oppositeBottom.get(edge)) is not None:
+            return self.exists(x + 1, y) and not self.nodes[x + 1][y].edges & toCheck 
+
         return True
+        
 
     # Checks if node is on the edge, if it is, changes it's isEdge
     def setEdges(self):
