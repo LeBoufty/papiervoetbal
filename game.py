@@ -127,7 +127,9 @@ class Board:
                        Edges.TOPRIGHT: Edges.BOTTOMRIGHT}
 
         if (toCheck := oppositeTop.get(edge)) is not None:
-            if not self.exists(x, y - 1):
+            if toCheck & Edges.BOTTOMLEFT and not self.exists(x, y - 1):
+                return False
+            if toCheck & Edges.BOTTOMRIGHT and not self.exists(x, y + 1):
                 return False
             if not self.exists(x - 1, y):
                 return False
@@ -137,7 +139,9 @@ class Board:
                           Edges.BOTTOMRIGHT: Edges.TOPRIGHT}
         
         if (toCheck := oppositeBottom.get(edge)) is not None:
-            if not self.exists(x, y + 1):
+            if toCheck & Edges.TOPLEFT and not self.exists(x, y - 1):
+                return False
+            if toCheck & Edges.TOPRIGHT and not self.exists(x, y + 1):
                 return False
             if not self.exists(x + 1, y):
                 return False
@@ -221,6 +225,15 @@ class Board:
                     self.ballX += i - 1 
                     self.ballY += j - 1
                     return True
+            except ValueError:
+                continue
+        return False
+
+    def canKickBall(self, direction):
+        for i in range(0, len(edges)):
+            try:
+                j = edges[i].index(direction)
+                return self.canAddEdge(self.ballX, self.ballY, self.ballX + i - 1, self.ballY + j - 1)
             except ValueError:
                 continue
         return False
