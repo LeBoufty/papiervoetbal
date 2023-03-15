@@ -125,16 +125,23 @@ class Board:
 
         oppositeTop = {Edges.TOPLEFT:  Edges.BOTTOMLEFT,
                        Edges.TOPRIGHT: Edges.BOTTOMRIGHT}
-        
+
         if (toCheck := oppositeTop.get(edge)) is not None:
-            return self.exists(x - 1, y) and not self.nodes[x - 1][y].edges & toCheck 
+            if not self.exists(x, y - 1):
+                return False
+            if not self.exists(x - 1, y):
+                return False
+            return not self.nodes[x - 1][y].edges & toCheck 
 
         oppositeBottom = {Edges.BOTTOMLEFT:  Edges.TOPLEFT,
                           Edges.BOTTOMRIGHT: Edges.TOPRIGHT}
         
         if (toCheck := oppositeBottom.get(edge)) is not None:
-            return self.exists(x + 1, y) and not self.nodes[x + 1][y].edges & toCheck 
-
+            if not self.exists(x, y + 1):
+                return False
+            if not self.exists(x + 1, y):
+                return False
+            return not self.nodes[x + 1][y].edges & toCheck 
         return True
         
 
